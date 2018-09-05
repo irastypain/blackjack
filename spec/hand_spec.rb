@@ -36,4 +36,12 @@ describe Blackjack::Hand do
     hand.flush
     expect(hand.empty?).to be_truthy
   end
+
+  it 'should return cards collection copy' do
+    hand = Blackjack::Hand.new(player)
+    hand.push(jack_of_clubs)
+    cards = hand.cards
+    cards.push(jack_of_clubs)
+    expect(hand.cards).not_to eq cards
+  end
 end

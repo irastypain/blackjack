@@ -2,11 +2,15 @@
 
 module Blackjack
   class Hand
-    attr_reader :owner, :cards
+    attr_reader :owner
 
     def initialize(owner)
       @owner = owner
       @cards = []
+    end
+
+    def cards
+      @cards.clone
     end
 
     def push(card)

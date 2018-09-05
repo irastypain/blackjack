@@ -4,10 +4,12 @@ require 'blackjack/card'
 
 module Blackjack
   class Deck
-    attr_reader :cards
-
     def initialize
       @cards = make_cards
+    end
+
+    def cards
+      @cards.clone
     end
 
     private
