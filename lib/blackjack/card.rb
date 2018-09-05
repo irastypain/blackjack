@@ -24,5 +24,9 @@ module Blackjack
         @literal.to_i
       end
     end
+
+    def ace?
+      @literal == 'A'
+    end
   end
 end

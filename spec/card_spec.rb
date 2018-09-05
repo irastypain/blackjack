@@ -39,4 +39,9 @@ describe Blackjack::Card do
       expect(card.points).to eq card.literal.to_i
     end
   end
+
+  it 'should be ace' do
+    ace_of_spades = Blackjack::Card.new('A', :spades)
+    expect(ace_of_spades.ace?).to be_truthy
+  end
 end
