@@ -55,8 +55,16 @@ module Blackjack
       @state[:player_hand].cards
     end
 
+    def player_points
+      @state[:player_hand].points
+    end
+
     def dealer_cards
       @state[:dealer_hand].cards
+    end
+
+    def dealer_points
+      @state[:dealer_hand].points
     end
 
     def actions
@@ -82,9 +90,11 @@ module Blackjack
 
     def bet
       player_bet = @player.give_money(MIN_BET)
-      total_bet = @state[:total_bet] + player_bet
-      actions = total_bet == MAX_BET ? %i[deal] : %i[bet deal]
-      update_state(status: STATUS_BET_ACCEPTED, total_bet: total_bet, actions: actions)
+      new_total_bet = @state[:total_bet] + player_bet
+      update_state(total_bet: new_total_bet)
+
+      actions = can_player_bet? ? %i[bet deal] : %i[deal]
+      update_state(status: STATUS_BET_ACCEPTED, actions: actions)
     end
 
     def deal
@@ -172,6 +182,10 @@ module Blackjack
     def push_card_from_shoe(hand)
       card = @shoe.dequeue
       hand.push(card)
+    end
+
+    def can_player_bet?
+      @player.total_money >= MIN_BET && @state[:total_bet] != MAX_BET
     end
 
     def end_round_with(status, coefficient)

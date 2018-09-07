@@ -61,7 +61,9 @@ describe Blackjack::Round do
       expect(round.total_bet).to eq Blackjack::Round::MIN_BET
       expect(round.actions).to eq Blackjack::Round::EMPTY_ACTIONS
       expect(round.player_cards).to include(cards[0], cards[2], cards[3])
+      expect(round.player_points).to eq 20
       expect(round.dealer_cards).to include(cards[1], cards[4])
+      expect(round.dealer_points).to eq 17
     end
   end
 
