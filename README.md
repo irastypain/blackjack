@@ -16,8 +16,12 @@ From [wikipedia.org](https://en.wikipedia.org/wiki/Blackjack)
   $ make install
 ```
 
+[![asciicast](https://asciinema.org/a/q9IA6GY5MIvNWBhSwpmjhUK5X.png)](https://asciinema.org/a/q9IA6GY5MIvNWBhSwpmjhUK5X)
+
 ## Usage
 
 ```bash
  $ blackjack
 ```
+
+[![asciicast](https://asciinema.org/a/hPK1na0dUlTSJS7lFyAFpXnWH.png)](https://asciinema.org/a/hPK1na0dUlTSJS7lFyAFpXnWH)
