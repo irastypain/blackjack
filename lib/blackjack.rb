@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'blackjack/version'
+
 require 'blackjack/card'
 require 'blackjack/deck'
 require 'blackjack/shoe'
