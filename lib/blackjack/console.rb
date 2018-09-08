@@ -33,6 +33,12 @@ module Blackjack
       print_horizontal([block_message])
     end
 
+    def self.print_errors(errors)
+      errors.map do |error|
+        print_bordered_message("Error: #{error.message}", length: 69, align: :ljust)
+      end
+    end
+
     def self.print_game_board
       clear_screen
       print_logo

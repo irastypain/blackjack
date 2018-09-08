@@ -67,6 +67,29 @@ describe Blackjack::Round do
     end
   end
 
+  describe 'errors' do
+    it 'should raise error when send unsupported action' do
+      player.take_money(Blackjack::Round::MIN_BET * 2)
+      shoe = Blackjack::Shoe.new(Blackjack::Deck.new, 1)
+      round = Blackjack::Round.new(dealer, player, shoe)
+
+      round.do_action(:bet)
+
+      expect { round.do_action(:unsupported_action) }.to raise_error(RuntimeError)
+    end
+
+    it 'should raise error when player has not enough money that to bet' do
+      player.take_money(Blackjack::Round::MIN_BET * 2)
+      shoe = Blackjack::Shoe.new(Blackjack::Deck.new, 1)
+      round = Blackjack::Round.new(dealer, player, shoe)
+
+      round.do_action(:bet)
+      player.give_money(Blackjack::Round::MIN_BET)
+
+      expect { round.do_action(:bet) }.to raise_error(RuntimeError)
+    end
+  end
+
   describe 'win' do
     context 'when player has blackjack' do
       context 'when dealer has not blackjack' do

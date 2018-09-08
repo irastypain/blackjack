@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-$LOAD_PATH << File.expand_path('../lib', __FILE__)
+$LOAD_PATH << File.expand_path('../lib', __dir__)
 
 require 'commander'
 require 'blackjack'
@@ -37,6 +37,8 @@ statuses = [
   Blackjack::Round::STATUS_BET_ACCEPTED
 ]
 
+game_errors = []
+
 loop do
   if player.total_money < min_bet
     Blackjack::Console.new_line
@@ -45,24 +47,42 @@ loop do
 
   Blackjack::Console.new_line
   game_action = Commander::UI.choose('Choose you a one action:', *game.actions)
-  game.do_action(game_action)
+
+  begin
+    game.do_action(game_action)
+  rescue RuntimeError => error
+    game_errors << error
+  end
+
+  unless game_errors.empty?
+    Blackjack::Console.print_errors(game_errors)
+    game_errors.clear
+  end
 
   if game.status == Blackjack::Game::STATUS_PLAY
+    round_errors = []
+
     loop do
       Blackjack::Console.print_game_board
       Blackjack::Console.print_current_state(game)
       Blackjack::Console.print_cards_state(game) unless statuses.include?(game.round.status)
+      unless round_errors.empty?
+        Blackjack::Console.print_errors(round_errors)
+        round_errors.clear
+      end
+
+      if game.round_ended?
+        Blackjack::Console.print_result(game)
+        break
+      end
 
       Blackjack::Console.new_line
       round_action = Commander::UI.choose('Choose you a one action:', *game.round.actions)
-      game.round.do_action(round_action)
 
-      if game.round_ended?
-        Blackjack::Console.print_game_board
-        Blackjack::Console.print_current_state(game)
-        Blackjack::Console.print_cards_state(game) unless statuses.include?(game.round.status)
-        Blackjack::Console.print_result(game)
-        break
+      begin
+        game.round.do_action(round_action)
+      rescue RuntimeError => error
+        round_errors << error
       end
     end
   end
