@@ -10,6 +10,11 @@ require 'blackjack'
 if ENV['COVERAGE']
   require 'simplecov'
   require 'simplecov-console'
-  SimpleCov.formatter = SimpleCov::Formatter::Console
+
+  SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new([
+    SimpleCov.formatter = SimpleCov::Formatter::HTMLFormatter,
+    SimpleCov.formatter = SimpleCov::Formatter::Console
+  ])
+
   SimpleCov.start
 end
