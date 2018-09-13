@@ -2,6 +2,9 @@
 
 require 'blackjack/version'
 
+require 'blackjack/errors/error'
+require 'blackjack/errors/application_logic_error'
+
 require 'blackjack/card'
 require 'blackjack/deck'
 require 'blackjack/shoe'
