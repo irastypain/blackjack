@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'blackjack/hand'
-
 module Blackjack
   class Round
     STATUS_NEW = :new
@@ -34,7 +32,7 @@ module Blackjack
     end
 
     def do_action(action, params = {})
-      raise "Unsupported action: #{action.inspect}" unless @state[:actions].include?(action)
+      raise ArgumentError, "Unsupported action: #{action.inspect}" unless @state[:actions].include?(action)
       params.empty? ? send(action) : send(action, params)
       self
     end

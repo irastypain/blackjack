@@ -8,9 +8,9 @@ module Blackjack
     LITERALS = %w[2 3 4 5 6 7 8 9 10 J Q K A].freeze
 
     def initialize(literal, suit)
-      raise "Unsupported literal '#{literal}'" unless LITERALS.include?(literal)
+      raise ArgumentError, "Unsupported literal '#{literal}'" unless LITERALS.include?(literal)
       @literal = literal
-      raise "Unsupported suit '#{suit.inspect}'" unless SUITS.include?(suit)
+      raise ArgumentError, "Unsupported suit '#{suit.inspect}'" unless SUITS.include?(suit)
       @suit = suit
     end
 

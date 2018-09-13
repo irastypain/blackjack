@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'blackjack/card'
-
 describe Blackjack::Card do
   it 'should make the jack of hearts card' do
     jack_of_hearts = Blackjack::Card.new('J', :hearts)
@@ -9,12 +7,12 @@ describe Blackjack::Card do
     expect(jack_of_hearts.suit).to eq :hearts
   end
 
-  it 'should raise an error if make card with unsupported literal' do
-    expect { Blackjack::Card.new('1', :hearts) }.to raise_error RuntimeError
+  it 'should raise an ArgumentError if make card with unsupported literal' do
+    expect { Blackjack::Card.new('1', :hearts) }.to raise_error ArgumentError
   end
 
-  it 'should raise an error if make card with unsupported suit' do
-    expect { Blackjack::Card.new('Q', :smiles) }.to raise_error RuntimeError
+  it 'should raise an ArgumentError if make card with unsupported suit' do
+    expect { Blackjack::Card.new('Q', :smiles) }.to raise_error ArgumentError
   end
 
   it 'should return 11 points for ace' do

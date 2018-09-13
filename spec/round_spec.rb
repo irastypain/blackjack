@@ -1,11 +1,5 @@
 # frozen_string_literal: true
 
-require 'blackjack/round'
-require 'blackjack/player'
-require 'blackjack/dealer'
-require 'blackjack/deck'
-require 'blackjack/shoe'
-
 describe Blackjack::Round do
   let(:player) { Blackjack::Player.new('John') }
   let(:dealer) { Blackjack::Dealer.new('Smith') }
@@ -68,17 +62,17 @@ describe Blackjack::Round do
   end
 
   describe 'errors' do
-    it 'should raise error when send unsupported action' do
+    it 'should raise an ArgumentError when send unsupported action' do
       player.take_money(Blackjack::Round::MIN_BET * 2)
       shoe = Blackjack::Shoe.new(Blackjack::Deck.new, 1)
       round = Blackjack::Round.new(dealer, player, shoe)
 
       round.do_action(:bet)
 
-      expect { round.do_action(:unsupported_action) }.to raise_error(RuntimeError)
+      expect { round.do_action(:unsupported_action) }.to raise_error ArgumentError
     end
 
-    it 'should raise error when player has not enough money that to bet' do
+    it 'should raise an ApplicationLogicError when player has not enough money that to bet' do
       player.take_money(Blackjack::Round::MIN_BET * 2)
       shoe = Blackjack::Shoe.new(Blackjack::Deck.new, 1)
       round = Blackjack::Round.new(dealer, player, shoe)
@@ -86,7 +80,7 @@ describe Blackjack::Round do
       round.do_action(:bet)
       player.give_money(Blackjack::Round::MIN_BET)
 
-      expect { round.do_action(:bet) }.to raise_error(RuntimeError)
+      expect { round.do_action(:bet) }.to raise_error Blackjack::ApplicationLogicError
     end
   end
 

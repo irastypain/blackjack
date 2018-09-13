@@ -1,16 +1,11 @@
 # frozen_string_literal: true
 
-require 'blackjack/game'
-require 'blackjack/round'
-require 'blackjack/player'
-
 describe Blackjack::Game do
   let(:player) do
     player = Blackjack::Player.new('John')
     player.take_money(Blackjack::Round::MIN_BET)
     player
   end
-
   it 'should make a new game' do
     game = Blackjack::Game.new(player)
     expect(game.status).to eq Blackjack::Game::STATUS_NEW
@@ -53,5 +48,10 @@ describe Blackjack::Game do
 
     expect(game.status).to eq Blackjack::Game::STATUS_STOP
     expect(game.actions).to eq %i[]
+  end
+
+  it 'should raise an ArgumentError if received unsupported action' do
+    game = Blackjack::Game.new(player)
+    expect { game.do_action(:unsupported_action) }.to raise_error ArgumentError
   end
 end

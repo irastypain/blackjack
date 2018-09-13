@@ -14,7 +14,7 @@ module Blackjack
     end
 
     def give_money(units)
-      raise 'Not enough money' if @total_money < units
+      raise Blackjack::ApplicationLogicError, 'Not enough money' if @total_money < units
       @total_money -= units
       units
     end

@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'blackjack/shoe'
-require 'blackjack/deck'
-
 describe Blackjack::Shoe do
   it 'should make a shoe with one deck' do
     shoe = Blackjack::Shoe.new(Blackjack::Deck.new, 1)

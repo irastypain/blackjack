@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'blackjack/deck'
-require 'blackjack/card'
-
 describe Blackjack::Deck do
   it 'should make a deck which has 52 cards' do
     deck = Blackjack::Deck.new

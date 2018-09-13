@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'blackjack/player'
-
 describe Blackjack::Player do
   it 'should make a player' do
     player = Blackjack::Player.new('John')
@@ -22,9 +20,9 @@ describe Blackjack::Player do
     expect(player.total_money).to eq 6
   end
 
-  it 'should raise error if not enough money' do
+  it 'should raise an ApplicationLogicError if not enough money' do
     player = Blackjack::Player.new('John')
     player.take_money(4)
-    expect { player.give_money(5) }.to raise_error(RuntimeError)
+    expect { player.give_money(5) }.to raise_error Blackjack::ApplicationLogicError
   end
 end

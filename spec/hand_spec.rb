@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require 'blackjack/hand'
-require 'blackjack/player'
-require 'blackjack/card'
-
 describe Blackjack::Hand do
   let(:player) { Blackjack::Player.new('Smith') }
   let(:jack_of_clubs) { Blackjack::Card.new('J', :clubs) }

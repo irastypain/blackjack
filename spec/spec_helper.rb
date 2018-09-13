@@ -5,6 +5,8 @@ require 'rspec'
 
 $LOAD_PATH << File.expand_path('../lib', __dir__)
 
+require 'blackjack'
+
 if ENV['COVERAGE']
   require 'simplecov'
   require 'simplecov-console'

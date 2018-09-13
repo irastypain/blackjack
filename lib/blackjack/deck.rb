@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'blackjack/card'
-
 module Blackjack
   class Deck
     def initialize

@@ -1,10 +1,5 @@
 # frozen_string_literal: true
 
-require 'blackjack/round'
-require 'blackjack/dealer'
-require 'blackjack/shoe'
-require 'blackjack/deck'
-
 module Blackjack
   class Game
     attr_reader :status, :round, :round_number, :player
@@ -24,7 +19,7 @@ module Blackjack
     end
 
     def do_action(action, params = {})
-      raise "Unsupported action: #{action.inspect}" unless actions.include?(action)
+      raise ArgumentError, "Unsupported action: #{action.inspect}" unless actions.include?(action)
       params.empty? ? send(action) : send(action, params)
       self
     end
