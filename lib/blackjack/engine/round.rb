@@ -89,27 +89,27 @@ module Blackjack
       @state[:dealer_hand]
     end
 
-    def increase_bet(bet_amount)
-      player_bet = get_bet_from_player(bet_amount)
-      update_state(total_bet: total_bet + player_bet)
-    end
-
-    def has_player_enough_money?(bet_amount)
+    def player_enough_money?(bet_amount)
       @player.total_money >= bet_amount
     end
- 
+
     def get_bet_from_player(bet_amount)
-      unless has_player_enough_money?(bet_amount)
+      unless player_enough_money?(bet_amount)
         raise Blackjack::ApplicationLogicError, "Bet can't be do because the player doesn't have enough money"
       end
       @player.give_money(bet_amount)
+    end
+
+    def increase_bet(bet_amount)
+      player_bet = get_bet_from_player(bet_amount)
+      update_state(total_bet: total_bet + player_bet)
     end
 
     def bet
       increase_bet(Blackjack::Settings::MIN_BET)
 
       actions = %i[deal]
-      actions << :bet if has_player_enough_money?(Blackjack::Settings::MIN_BET)
+      actions << :bet if player_enough_money?(Blackjack::Settings::MIN_BET)
       update_state(status: STATUS_BET_ACCEPTED, actions: actions)
     end
 
@@ -133,7 +133,7 @@ module Blackjack
 
       if player_hand.bust?
         end_round_with(STATUS_LOSE, LOSE_COEFFICIENT)
-      elsif player_hand.has_max_win_points?
+      elsif player_hand.max_win_points?
         stand
       else
         update_state(status: STATUS_PLAYER_PLAYS, actions: %i[hit stand])
@@ -154,7 +154,7 @@ module Blackjack
         end
       else
         actions = %i[hit stand]
-        actions << :double if has_player_enough_money?(total_bet)
+        actions << :double if player_enough_money?(total_bet)
         update_state(status: STATUS_PLAYER_PLAYS, actions: actions)
       end
     end

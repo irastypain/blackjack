@@ -40,7 +40,7 @@ module Blackjack
     end
 
     def blackjack?
-      @cards.count == 2 && has_max_win_points?
+      @cards.count == 2 && max_win_points?
     end
 
     def possible_blackjack?
@@ -51,7 +51,7 @@ module Blackjack
       points > Blackjack::Settings::MAX_WIN_POINTS
     end
 
-    def has_max_win_points?
+    def max_win_points?
       points == Blackjack::Settings::MAX_WIN_POINTS
     end
   end

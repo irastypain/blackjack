@@ -70,6 +70,6 @@ describe Blackjack::Hand do
     hand.push(ace_of_spades)
     hand.push(jack_of_clubs)
     hand.push(jack_of_clubs)
-    expect(hand.has_max_win_points?).to be_truthy
+    expect(hand.max_win_points?).to be_truthy
   end
 end
