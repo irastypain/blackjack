@@ -108,8 +108,7 @@ module Blackjack
     def bet
       increase_bet(Blackjack::Settings::MIN_BET)
 
-      actions = %i[deal]
-      actions << :bet if player_enough_money?(Blackjack::Settings::MIN_BET)
+      actions = player_enough_money?(Blackjack::Settings::MIN_BET) ? %i[bet deal] : %i[deal]
       update_state(status: STATUS_BET_ACCEPTED, actions: actions)
     end
 
@@ -153,8 +152,7 @@ module Blackjack
           end_round_with(STATUS_WIN, WIN_COEFFICIENT_3_TO_2)
         end
       else
-        actions = %i[hit stand]
-        actions << :double if player_enough_money?(total_bet)
+        actions = player_enough_money?(total_bet) ? %i[double hit stand] : %i[hit stand]
         update_state(status: STATUS_PLAYER_PLAYS, actions: actions)
       end
     end

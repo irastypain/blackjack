@@ -14,7 +14,7 @@ Blackjack::Console.print_message('May I have your name?')
 name = ask('My name: ')
 player = Blackjack::Player.new(name)
 
-min_bet = Blackjack::Round::MIN_BET
+min_bet = Blackjack::Settings::MIN_BET
 money_message = "How much money do you want to have before you start the game? (minimal #{min_bet})"
 
 loop do
@@ -50,7 +50,7 @@ loop do
 
   begin
     game.do_action(game_action)
-  rescue RuntimeError => error
+  rescue => error
     game_errors << error
   end
 
@@ -81,7 +81,7 @@ loop do
 
       begin
         game.round.do_action(round_action)
-      rescue RuntimeError => error
+      rescue => error
         round_errors << error
       end
     end
