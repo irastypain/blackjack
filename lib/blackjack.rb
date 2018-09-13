@@ -5,14 +5,15 @@ require 'blackjack/version'
 require 'blackjack/errors/error'
 require 'blackjack/errors/application_logic_error'
 
-require 'blackjack/card'
-require 'blackjack/deck'
-require 'blackjack/shoe'
-require 'blackjack/player'
-require 'blackjack/dealer'
-require 'blackjack/hand'
-require 'blackjack/round'
-require 'blackjack/game'
+require 'blackjack/entities/card'
+require 'blackjack/entities/player'
+require 'blackjack/entities/dealer'
+
+require 'blackjack/engine/deck'
+require 'blackjack/engine/shoe'
+require 'blackjack/engine/hand'
+require 'blackjack/engine/round'
+require 'blackjack/engine/game'
 
 module Blackjack
   class << self
