@@ -3,7 +3,7 @@
 describe Blackjack::Game do
   let(:player) do
     player = Blackjack::Player.new('John')
-    player.take_money(Blackjack::Round::MIN_BET)
+    player.take_money(Blackjack::Settings::MIN_BET)
     player
   end
   it 'should make a new game' do

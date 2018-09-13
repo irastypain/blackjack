@@ -4,8 +4,6 @@ module Blackjack
   class Hand
     attr_reader :owner
 
-    TWENTY_ONE = 21
-
     def initialize(owner)
       @owner = owner
       @cards = []
@@ -42,7 +40,7 @@ module Blackjack
     end
 
     def blackjack?
-      @cards.count == 2 && twenty_one?
+      @cards.count == 2 && has_max_win_points?
     end
 
     def possible_blackjack?
@@ -50,11 +48,11 @@ module Blackjack
     end
 
     def bust?
-      points > TWENTY_ONE
+      points > Blackjack::Settings::MAX_WIN_POINTS
     end
 
-    def twenty_one?
-      points == TWENTY_ONE
+    def has_max_win_points?
+      points == Blackjack::Settings::MAX_WIN_POINTS
     end
   end
 end

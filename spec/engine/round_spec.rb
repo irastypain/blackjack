@@ -14,7 +14,7 @@ describe Blackjack::Round do
 
   describe 'life cycle' do
     it 'should check statuses from :new to :win' do
-      player.take_money(Blackjack::Round::MIN_BET)
+      player.take_money(Blackjack::Settings::MIN_BET)
       cards = [
         Blackjack::Card.new('4', :clubs),
         Blackjack::Card.new('9', :diamonds),
@@ -38,7 +38,7 @@ describe Blackjack::Round do
     end
 
     it 'should check full state' do
-      player.take_money(Blackjack::Round::MIN_BET)
+      player.take_money(Blackjack::Settings::MIN_BET)
       cards = [
         Blackjack::Card.new('A', :clubs),
         Blackjack::Card.new('9', :diamonds),
@@ -51,8 +51,8 @@ describe Blackjack::Round do
       round.do_action(:stand)
 
       expect(round.status).to eq Blackjack::Round::STATUS_WIN
-      expect(round.winning).to eq Blackjack::Round::MIN_BET
-      expect(round.total_bet).to eq Blackjack::Round::MIN_BET
+      expect(round.winning).to eq Blackjack::Settings::MIN_BET
+      expect(round.total_bet).to eq Blackjack::Settings::MIN_BET
       expect(round.actions).to eq Blackjack::Round::EMPTY_ACTIONS
       expect(round.player_cards).to include(cards[0], cards[2], cards[3])
       expect(round.player_points).to eq 20
@@ -63,7 +63,7 @@ describe Blackjack::Round do
 
   describe 'errors' do
     it 'should raise an ArgumentError when send unsupported action' do
-      player.take_money(Blackjack::Round::MIN_BET * 2)
+      player.take_money(Blackjack::Settings::MIN_BET * 2)
       shoe = Blackjack::Shoe.new(Blackjack::Deck.new, 1)
       round = Blackjack::Round.new(dealer, player, shoe)
 
@@ -73,12 +73,12 @@ describe Blackjack::Round do
     end
 
     it 'should raise an ApplicationLogicError when player has not enough money that to bet' do
-      player.take_money(Blackjack::Round::MIN_BET * 2)
+      player.take_money(Blackjack::Settings::MIN_BET * 2)
       shoe = Blackjack::Shoe.new(Blackjack::Deck.new, 1)
       round = Blackjack::Round.new(dealer, player, shoe)
 
       round.do_action(:bet)
-      player.give_money(Blackjack::Round::MIN_BET)
+      player.give_money(Blackjack::Settings::MIN_BET)
 
       expect { round.do_action(:bet) }.to raise_error Blackjack::ApplicationLogicError
     end
@@ -88,7 +88,7 @@ describe Blackjack::Round do
     context 'when player has blackjack' do
       context 'when dealer has not blackjack' do
         it 'should win with 3 to 2' do
-          player.take_money(Blackjack::Round::MIN_BET)
+          player.take_money(Blackjack::Settings::MIN_BET)
           started_money = player.total_money
 
           cards = [
@@ -98,10 +98,10 @@ describe Blackjack::Round do
           ]
           round = prepare_round(cards)
 
-          winning = Blackjack::Round::MIN_BET / 2 * 3
+          winning = Blackjack::Settings::MIN_BET / 2 * 3
           expect(round.status).to eq Blackjack::Round::STATUS_WIN
           expect(round.winning).to eq winning
-          expect(round.total_bet).to eq Blackjack::Round::MIN_BET
+          expect(round.total_bet).to eq Blackjack::Settings::MIN_BET
           expect(round.actions).to eq Blackjack::Round::EMPTY_ACTIONS
           expect(player.total_money).to eq started_money + winning
         end
@@ -111,7 +111,7 @@ describe Blackjack::Round do
     context 'when player has not blackjack' do
       context 'when player has points great than dealer' do
         it 'should win with 1 to 1' do
-          player.take_money(Blackjack::Round::MIN_BET)
+          player.take_money(Blackjack::Settings::MIN_BET)
           started_money = player.total_money
 
           cards = [
@@ -125,10 +125,10 @@ describe Blackjack::Round do
           round.do_action(:hit)
           round.do_action(:stand)
 
-          winning = Blackjack::Round::MIN_BET
+          winning = Blackjack::Settings::MIN_BET
           expect(round.status).to eq Blackjack::Round::STATUS_WIN
           expect(round.winning).to eq winning
-          expect(round.total_bet).to eq Blackjack::Round::MIN_BET
+          expect(round.total_bet).to eq Blackjack::Settings::MIN_BET
           expect(round.actions).to eq Blackjack::Round::EMPTY_ACTIONS
           expect(player.total_money).to eq started_money + winning
         end
@@ -136,7 +136,7 @@ describe Blackjack::Round do
 
       context 'when dealer has bust' do
         it 'should win with to 1 to 1' do
-          player.take_money(Blackjack::Round::MIN_BET)
+          player.take_money(Blackjack::Settings::MIN_BET)
           started_money = player.total_money
 
           cards = [
@@ -149,10 +149,10 @@ describe Blackjack::Round do
           round = prepare_round(cards)
           round.do_action(:stand)
 
-          winning = Blackjack::Round::MIN_BET
+          winning = Blackjack::Settings::MIN_BET
           expect(round.status).to eq Blackjack::Round::STATUS_WIN
           expect(round.winning).to eq winning
-          expect(round.total_bet).to eq Blackjack::Round::MIN_BET
+          expect(round.total_bet).to eq Blackjack::Settings::MIN_BET
           expect(round.actions).to eq Blackjack::Round::EMPTY_ACTIONS
           expect(player.total_money).to eq started_money + winning
         end
@@ -162,7 +162,7 @@ describe Blackjack::Round do
 
   describe 'lose' do
     it 'should lose if dealer has blackjack' do
-      player.take_money(Blackjack::Round::MIN_BET)
+      player.take_money(Blackjack::Settings::MIN_BET)
 
       cards = [
         Blackjack::Card.new('K', :hearts),
@@ -176,13 +176,13 @@ describe Blackjack::Round do
 
       expect(round.status).to eq Blackjack::Round::STATUS_LOSE
       expect(round.winning).to eq 0
-      expect(round.total_bet).to eq Blackjack::Round::MIN_BET
+      expect(round.total_bet).to eq Blackjack::Settings::MIN_BET
       expect(round.actions).to eq Blackjack::Round::EMPTY_ACTIONS
       expect(player.total_money).to eq 0
     end
 
     it 'should lose if player has bust' do
-      player.take_money(Blackjack::Round::MIN_BET)
+      player.take_money(Blackjack::Settings::MIN_BET)
 
       cards = [
         Blackjack::Card.new('Q', :spades),
@@ -195,13 +195,13 @@ describe Blackjack::Round do
 
       expect(round.status).to eq Blackjack::Round::STATUS_LOSE
       expect(round.winning).to eq 0
-      expect(round.total_bet).to eq Blackjack::Round::MIN_BET
+      expect(round.total_bet).to eq Blackjack::Settings::MIN_BET
       expect(round.actions).to eq Blackjack::Round::EMPTY_ACTIONS
       expect(player.total_money).to eq 0
     end
 
     it "should lose if player's points less than dealer's points" do
-      player.take_money(Blackjack::Round::MIN_BET)
+      player.take_money(Blackjack::Settings::MIN_BET)
 
       cards = [
         Blackjack::Card.new('Q', :hearts),
@@ -214,7 +214,7 @@ describe Blackjack::Round do
 
       expect(round.status).to eq Blackjack::Round::STATUS_LOSE
       expect(round.winning).to eq 0
-      expect(round.total_bet).to eq Blackjack::Round::MIN_BET
+      expect(round.total_bet).to eq Blackjack::Settings::MIN_BET
       expect(round.actions).to eq Blackjack::Round::EMPTY_ACTIONS
       expect(player.total_money).to eq 0
     end
@@ -222,7 +222,7 @@ describe Blackjack::Round do
 
   describe 'draw' do
     it 'should be draw if player has blackjack and dealer has blackjack' do
-      player.take_money(Blackjack::Round::MIN_BET)
+      player.take_money(Blackjack::Settings::MIN_BET)
       started_money = player.total_money
 
       cards = [
@@ -235,13 +235,13 @@ describe Blackjack::Round do
 
       expect(round.status).to eq Blackjack::Round::STATUS_DRAW
       expect(round.winning).to eq 0
-      expect(round.total_bet).to eq Blackjack::Round::MIN_BET
+      expect(round.total_bet).to eq Blackjack::Settings::MIN_BET
       expect(round.actions).to eq Blackjack::Round::EMPTY_ACTIONS
       expect(player.total_money).to eq started_money
     end
 
     it "should be draw if player's points and dealer's points equals" do
-      player.take_money(Blackjack::Round::MIN_BET)
+      player.take_money(Blackjack::Settings::MIN_BET)
       started_money = player.total_money
 
       cards = [
@@ -259,7 +259,7 @@ describe Blackjack::Round do
 
       expect(round.status).to eq Blackjack::Round::STATUS_DRAW
       expect(round.winning).to eq 0
-      expect(round.total_bet).to eq Blackjack::Round::MIN_BET
+      expect(round.total_bet).to eq Blackjack::Settings::MIN_BET
       expect(round.actions).to eq Blackjack::Round::EMPTY_ACTIONS
       expect(player.total_money).to eq started_money
     end
@@ -268,7 +268,7 @@ describe Blackjack::Round do
   describe 'double' do
     context 'when player can double bet' do
       it 'should win with 1 to 1 (double bet)' do
-        player.take_money(Blackjack::Round::MIN_BET * 2)
+        player.take_money(Blackjack::Settings::MIN_BET * 2)
         started_money = player.total_money
 
         cards = [
@@ -283,10 +283,10 @@ describe Blackjack::Round do
         round.do_action(:double)
         round.do_action(:stand)
 
-        winning = Blackjack::Round::MIN_BET * 2
+        winning = Blackjack::Settings::MIN_BET * 2
         expect(round.status).to eq Blackjack::Round::STATUS_WIN
         expect(round.winning).to eq winning
-        expect(round.total_bet).to eq Blackjack::Round::MIN_BET * 2
+        expect(round.total_bet).to eq Blackjack::Settings::MIN_BET * 2
         expect(round.actions).to eq Blackjack::Round::EMPTY_ACTIONS
         expect(player.total_money).to eq started_money + winning
       end
@@ -294,7 +294,7 @@ describe Blackjack::Round do
 
     context 'when player can not double bet because not enough money' do
       it 'should win with 1 to 1 (without double bet)' do
-        player.take_money(Blackjack::Round::MIN_BET)
+        player.take_money(Blackjack::Settings::MIN_BET)
         started_money = player.total_money
 
         cards = [
@@ -311,10 +311,10 @@ describe Blackjack::Round do
         round.do_action(:hit)
         round.do_action(:stand)
 
-        winning = Blackjack::Round::MIN_BET
+        winning = Blackjack::Settings::MIN_BET
         expect(round.status).to eq Blackjack::Round::STATUS_WIN
         expect(round.winning).to eq winning
-        expect(round.total_bet).to eq Blackjack::Round::MIN_BET
+        expect(round.total_bet).to eq Blackjack::Settings::MIN_BET
         expect(round.actions).to eq Blackjack::Round::EMPTY_ACTIONS
         expect(player.total_money).to eq started_money + winning
       end

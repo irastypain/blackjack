@@ -4,13 +4,13 @@ module Blackjack
   class Card
     attr_reader :literal, :suit
 
-    SUITS = %i[clubs diamonds hearts spades].freeze
-    LITERALS = %w[2 3 4 5 6 7 8 9 10 J Q K A].freeze
+    ALLOWED_SUITS = %i[clubs diamonds hearts spades].freeze
+    ALLOWED_LITERALS = %w[2 3 4 5 6 7 8 9 10 J Q K A].freeze
 
     def initialize(literal, suit)
-      raise ArgumentError, "Unsupported literal '#{literal}'" unless LITERALS.include?(literal)
+      raise ArgumentError, "Unsupported literal '#{literal}'" unless ALLOWED_LITERALS.include?(literal)
       @literal = literal
-      raise ArgumentError, "Unsupported suit '#{suit.inspect}'" unless SUITS.include?(suit)
+      raise ArgumentError, "Unsupported suit '#{suit.inspect}'" unless ALLOWED_SUITS.include?(suit)
       @suit = suit
     end
 

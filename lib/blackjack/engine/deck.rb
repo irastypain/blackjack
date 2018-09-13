@@ -13,9 +13,17 @@ module Blackjack
     private
 
     def make_cards
-      Card::SUITS.reduce([]) do |cards, suit|
-        cards + Card::LITERALS.map { |literal| Card.new(literal, suit) }
+      suits.reduce([]) do |cards, suit|
+        cards + literals.map { |literal| Card.new(literal, suit) }
       end
+    end
+
+    def literals
+      Card::ALLOWED_LITERALS
+    end
+
+    def suits
+      Card::ALLOWED_SUITS
     end
   end
 end

@@ -4,8 +4,6 @@ module Blackjack
   class Game
     attr_reader :status, :round, :round_number, :player
 
-    DECS_COUNT = 8
-
     STATUS_NEW = :new
     STATUS_PLAY = :play
     STATUS_STOP = :stop
@@ -13,7 +11,7 @@ module Blackjack
     def initialize(player)
       @player = player
       @dealer = Blackjack::Dealer.new('Smith')
-      @shoe = Blackjack::Shoe.new(Blackjack::Deck.new, DECS_COUNT).shuffle!
+      @shoe = Blackjack::Shoe.new(Blackjack::Deck.new, Blackjack::Settings::DECS_COUNT).shuffle!
       @status = STATUS_NEW
       @round_number = 0
     end
@@ -25,7 +23,7 @@ module Blackjack
     end
 
     def actions
-      return %i[exit] if @player.total_money < Blackjack::Round::MIN_BET
+      return %i[exit] if @player.total_money < Blackjack::Settings::MIN_BET
       return %i[new_round exit] if @status == STATUS_NEW || @round.nil? || round_ended?
       return %i[] if @status == STATUS_STOP
       %i[exit]

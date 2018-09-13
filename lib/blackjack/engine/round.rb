@@ -13,11 +13,6 @@ module Blackjack
 
     EMPTY_ACTIONS = %i[].freeze
 
-    MIN_BET = 10.0
-    MAX_BET = 1000.0
-
-    DEALER_ENOUGH_POINTS = 17
-
     WIN_COEFFICIENT_2_TO_1 = 2
     WIN_COEFFICIENT_3_TO_2 = 1.5
     WIN_COEFFICIENT_1_TO_1 = 1
@@ -87,7 +82,7 @@ module Blackjack
     end
 
     def bet
-      player_bet = @player.give_money(MIN_BET)
+      player_bet = @player.give_money(Blackjack::Settings::MIN_BET)
       new_total_bet = @state[:total_bet] + player_bet
       update_state(total_bet: new_total_bet)
 
@@ -134,7 +129,7 @@ module Blackjack
 
       if player_hand.bust?
         end_round_with(STATUS_LOSE, LOSE_COEFFICIENT)
-      elsif player_hand.twenty_one?
+      elsif player_hand.has_max_win_points?
         stand
       else
         update_state(status: STATUS_PLAYER_PLAYS, actions: %i[hit stand])
@@ -172,7 +167,7 @@ module Blackjack
 
     def dealer_take_cards_while_can
       dealer_hand = @state[:dealer_hand]
-      until dealer_hand.bust? || dealer_hand.points >= DEALER_ENOUGH_POINTS
+      until dealer_hand.bust? || dealer_hand.points >= Blackjack::Settings::DEALER_ENOUGH_POINTS
         push_card_from_shoe(dealer_hand)
       end
     end
@@ -183,7 +178,7 @@ module Blackjack
     end
 
     def can_player_bet?
-      @player.total_money >= MIN_BET && @state[:total_bet] != MAX_BET
+      @player.total_money >= Blackjack::Settings::MIN_BET && @state[:total_bet] != Blackjack::Settings::MAX_BET
     end
 
     def end_round_with(status, coefficient)

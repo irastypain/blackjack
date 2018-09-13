@@ -65,11 +65,11 @@ describe Blackjack::Hand do
     expect(hand.points).to eq 12
   end
 
-  it 'should have 21 points for one ace and two jacks' do
+  it 'should have max win points for one ace and two jacks' do
     hand = Blackjack::Hand.new(player)
     hand.push(ace_of_spades)
     hand.push(jack_of_clubs)
     hand.push(jack_of_clubs)
-    expect(hand.twenty_one?).to be_truthy
+    expect(hand.has_max_win_points?).to be_truthy
   end
 end
