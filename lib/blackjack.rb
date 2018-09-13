@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'blackjack/version'
+require 'blackjack/settings'
 
 require 'blackjack/errors/error'
 require 'blackjack/errors/application_logic_error'
