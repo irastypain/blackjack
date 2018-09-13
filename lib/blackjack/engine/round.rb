@@ -27,7 +27,7 @@ module Blackjack
     end
 
     def do_action(action, params = {})
-      raise ArgumentError, "Unsupported action: #{action.inspect}" unless @state[:actions].include?(action)
+      raise ArgumentError, "Unsupported action: #{action.inspect}" unless actions.include?(action)
       params.empty? ? send(action) : send(action, params)
       self
     end
@@ -45,19 +45,19 @@ module Blackjack
     end
 
     def player_cards
-      @state[:player_hand].cards
+      player_hand.cards
     end
 
     def player_points
-      @state[:player_hand].points
+      player_hand.points
     end
 
     def dealer_cards
-      @state[:dealer_hand].cards
+      dealer_hand.cards
     end
 
     def dealer_points
-      @state[:dealer_hand].points
+      dealer_hand.points
     end
 
     def actions
@@ -81,50 +81,54 @@ module Blackjack
       params.each { |param, value| @state[param] = value }
     end
 
-    def bet
-      player_bet = @player.give_money(Blackjack::Settings::MIN_BET)
-      new_total_bet = @state[:total_bet] + player_bet
-      update_state(total_bet: new_total_bet)
+    def player_hand
+      @state[:player_hand]
+    end
 
-      actions = can_player_bet? ? %i[bet deal] : %i[deal]
+    def dealer_hand
+      @state[:dealer_hand]
+    end
+
+    def increase_bet(bet_amount)
+      player_bet = get_bet_from_player(bet_amount)
+      update_state(total_bet: total_bet + player_bet)
+    end
+
+    def has_player_enough_money?(bet_amount)
+      @player.total_money >= bet_amount
+    end
+ 
+    def get_bet_from_player(bet_amount)
+      unless has_player_enough_money?(bet_amount)
+        raise Blackjack::ApplicationLogicError, "Bet can't be do because the player doesn't have enough money"
+      end
+      @player.give_money(bet_amount)
+    end
+
+    def bet
+      increase_bet(Blackjack::Settings::MIN_BET)
+
+      actions = %i[deal]
+      actions << :bet if has_player_enough_money?(Blackjack::Settings::MIN_BET)
       update_state(status: STATUS_BET_ACCEPTED, actions: actions)
     end
 
     def deal
-      push_card_from_shoe(@state[:player_hand])
-      push_card_from_shoe(@state[:dealer_hand])
-      push_card_from_shoe(@state[:player_hand])
+      push_card_from_shoe(player_hand)
+      push_card_from_shoe(dealer_hand)
+      push_card_from_shoe(player_hand)
 
       update_state(status: STATUS_DEALT, actions: EMPTY_ACTIONS)
 
       player_plays
     end
 
-    def player_plays
-      player_hand = @state[:player_hand]
-      dealer_hand = @state[:dealer_hand]
-
-      if player_hand.blackjack?
-        if dealer_hand.possible_blackjack?
-          stand
-        else
-          end_round_with(STATUS_WIN, WIN_COEFFICIENT_3_TO_2)
-        end
-      else
-        actions = @player.total_money >= @state[:total_bet] ? %i[double hit stand] : %i[hit stand]
-        update_state(status: STATUS_PLAYER_PLAYS, actions: actions)
-      end
-    end
-
-    def double
-      current_bet = @state[:total_bet]
-      player_bet = @player.give_money(current_bet)
-      update_state(total_bet: current_bet + player_bet)
+    def double 
+      increase_bet(total_bet)
       hit
     end
 
     def hit
-      player_hand = @state[:player_hand]
       push_card_from_shoe(player_hand)
 
       if player_hand.bust?
@@ -141,9 +145,21 @@ module Blackjack
       dealer_plays
     end
 
+    def player_plays
+      if player_hand.blackjack?
+        if dealer_hand.possible_blackjack?
+          stand
+        else
+          end_round_with(STATUS_WIN, WIN_COEFFICIENT_3_TO_2)
+        end
+      else
+        actions = %i[hit stand]
+        actions << :double if has_player_enough_money?(total_bet)
+        update_state(status: STATUS_PLAYER_PLAYS, actions: actions)
+      end
+    end
+
     def dealer_plays
-      player_hand = @state[:player_hand]
-      dealer_hand = @state[:dealer_hand]
       push_card_from_shoe(dealer_hand)
 
       if dealer_hand.blackjack?
@@ -166,7 +182,6 @@ module Blackjack
     end
 
     def dealer_take_cards_while_can
-      dealer_hand = @state[:dealer_hand]
       until dealer_hand.bust? || dealer_hand.points >= Blackjack::Settings::DEALER_ENOUGH_POINTS
         push_card_from_shoe(dealer_hand)
       end
@@ -175,10 +190,6 @@ module Blackjack
     def push_card_from_shoe(hand)
       card = @shoe.dequeue
       hand.push(card)
-    end
-
-    def can_player_bet?
-      @player.total_money >= Blackjack::Settings::MIN_BET && @state[:total_bet] != Blackjack::Settings::MAX_BET
     end
 
     def end_round_with(status, coefficient)
@@ -193,16 +204,15 @@ module Blackjack
     end
 
     def calc_winning(multiplier)
-      @state[:total_bet] * multiplier
+      total_bet * multiplier
     end
 
     def return_bet
-      @player.take_money(@state[:total_bet])
+      @player.take_money(total_bet)
     end
 
     def pay_winning
-      total_amount = @state[:total_bet] + @state[:winning]
-      @player.take_money(total_amount)
+      @player.take_money(total_bet + winning)
     end
   end
 end
