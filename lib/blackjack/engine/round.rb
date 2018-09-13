@@ -169,7 +169,9 @@ module Blackjack
       else
         dealer_take_cards_while_can
 
-        if dealer_hand.bust? || dealer_hand.points < player_hand.points
+        if player_hand.blackjack?
+          end_round_with(STATUS_WIN, WIN_COEFFICIENT_3_TO_2)
+        elsif dealer_hand.bust? || dealer_hand.points < player_hand.points
           end_round_with(STATUS_WIN, WIN_COEFFICIENT_1_TO_1)
         elsif dealer_hand.points == player_hand.points
           end_round_with(STATUS_DRAW, DRAW_COEFFICIENT)

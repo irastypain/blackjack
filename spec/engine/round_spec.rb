@@ -106,6 +106,28 @@ describe Blackjack::Round do
           expect(player.total_money).to eq started_money + winning
         end
       end
+      context 'when dealer probably has blackjack, but has not' do
+        it 'should win with 3 to 2' do
+          player.take_money(Blackjack::Settings::MIN_BET)
+          started_money = player.total_money
+
+          cards = [
+            Blackjack::Card.new('A', :spades),
+            Blackjack::Card.new('A', :hearts),
+            Blackjack::Card.new('K', :clubs),
+            Blackjack::Card.new('6', :hearts),
+            Blackjack::Card.new('9', :diamonds)
+          ]
+          round = prepare_round(cards)
+
+          winning = Blackjack::Settings::MIN_BET / 2 * 3
+          expect(round.status).to eq Blackjack::Round::STATUS_WIN
+          expect(round.winning).to eq winning
+          expect(round.total_bet).to eq Blackjack::Settings::MIN_BET
+          expect(round.actions).to eq Blackjack::Round::EMPTY_ACTIONS
+          expect(player.total_money).to eq started_money + winning
+        end
+      end
     end
 
     context 'when player has not blackjack' do
