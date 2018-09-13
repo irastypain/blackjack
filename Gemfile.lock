@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    blackjack (0.1.1)
+    blackjack (0.1.2)
       commander (~> 4.4)
 
 GEM
