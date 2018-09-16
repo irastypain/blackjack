@@ -15,7 +15,7 @@ From [wikipedia.org](https://en.wikipedia.org/wiki/Blackjack)
 ## Installation
 
 ```bash
-  $ git clone http://github.com/irastypain/blackjack.git
+  $ git clone https://github.com/irastypain/blackjack.git
   $ cd blackjack
   $ make install
 ```
